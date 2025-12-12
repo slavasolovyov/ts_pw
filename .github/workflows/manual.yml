@@ -30,7 +30,7 @@ jobs:
         run: npm ci
 
       - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+        uses: playwright-community/setup-playwright@v1
 
       - name: Run Playwright tests
         run: 
@@ -51,8 +51,17 @@ jobs:
         with:
           name: junit-results-manual
           path: reports/junit/results.xml
-      - name: Upload html report to guthub page
+          
+      # - name: Upload html report to guthub page
+      #   if: always()
+      #   uses: actions/upload-pages-artifact@v3
+      #   with:
+      #     path: reports/playwright-report
+          
+      - name: Output HTML report URL
         if: always()
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: reports/playwright-report
+        run: |
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.event.repository.name }}"
+          echo "::notice::HTML Report URL: https://${REPO_OWNER}.github.io/${REPO_NAME}/"
+          echo "HTML Report URL: https://${REPO_OWNER}.github.io/${REPO_NAME}/"
