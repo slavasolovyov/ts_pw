@@ -12,6 +12,7 @@ export default defineConfig({
   workers: process.env.CI ? 2 : 1,
   reporter: [
     ['list'],
+    ['@estruyf/github-actions-reporter'],
     ['junit', { outputFile: 'reports/junit/results.xml' }],
     ['html', { outputFolder: 'reports/playwright-report', open: 'never' }],
   ],
