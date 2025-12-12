@@ -18,7 +18,18 @@ npm run test:report   # open last HTML report
 ```
 
 ## CI
-- GitHub Actions workflow at `.github/workflows/ci.yml` installs deps, installs browsers, runs `npx playwright test`, and uploads the HTML report (`reports/playwright-report`) plus JUnit XML (`reports/junit/results.xml`) as artifacts.
+
+### Automatic CI
+- GitHub Actions workflow at `.github/workflows/ci.yml` runs automatically on push/PR to main branch
+- Installs deps, installs browsers, runs `npx playwright test`
+- Uploads HTML report (`reports/playwright-report`) and JUnit XML (`reports/junit/results.xml`) as artifacts
+
+### Manual Test Run
+- GitHub Actions workflow at `.github/workflows/manual.yml` can be triggered manually
+- Go to **Actions** → **Manual Test Run** → **Run workflow**
+- Options:
+  - **Browser**: Choose `all`, `chromium`, or `webkit` to run tests on specific browser(s)
+- Uploads reports as artifacts with `-manual` suffix
 
 ## Project Structure
 ```
