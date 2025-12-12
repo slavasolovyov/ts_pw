@@ -7,15 +7,13 @@
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report reports/playwright-report",
-    "test:ui": "playwright test --ui"
+    "test:ui": "playwright test --ui",
+    "setup:local": "npm install --save-dev @playwright/test@^1.57.0 @estruyf/github-actions-reporter typescript @types/node && playwright install --with-deps"
   },
   "devDependencies": {
     "@estruyf/github-actions-reporter": "^1.10.0",
-    "@playwright/test": "^1.48.2",
+    "@playwright/test": "^1.57.0",
     "@types/node": "^20.0.0",
-    "npm": "^11.7.0",
-    "playwright": "^1.48.2",
-    "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
 }
