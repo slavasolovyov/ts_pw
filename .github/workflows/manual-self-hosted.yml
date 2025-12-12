@@ -45,26 +45,26 @@ jobs:
           node-version: 20
           cache: npm
 
-      - name: Install project dependencies (excluding Playwright)
-        run: |
-          which sh
-          # Remove any existing Playwright installations
-          rm -rf node_modules/@playwright node_modules/playwright node_modules/@playwright/test 2>/dev/null || true
-          # Install dependencies - this will install @playwright/test from package.json
-          npm install --ignore-scripts || true
-          # Remove local Playwright and create symlink to global version
-          rm -rf node_modules/@playwright node_modules/playwright 2>/dev/null || true
-          mkdir -p node_modules/@playwright
-          # Create symlink pointing to global @playwright/test
-          ln -sfn /opt/homebrew/lib/node_modules/@playwright/test node_modules/@playwright/test
-          # Verify symlink
-          if [ -L "node_modules/@playwright/test" ]; then
-            echo "✓ Symlink created to global @playwright/test"
-            ls -la node_modules/@playwright/test
-          else
-            echo "✗ Failed to create symlink"
-            exit 1
-          fi
+      # - name: Install project dependencies (excluding Playwright)
+      #   run: |
+      #     which sh
+      #     # Remove any existing Playwright installations
+      #     rm -rf node_modules/@playwright node_modules/playwright node_modules/@playwright/test 2>/dev/null || true
+      #     # Install dependencies - this will install @playwright/test from package.json
+      #     npm install --ignore-scripts || true
+      #     # Remove local Playwright and create symlink to global version
+      #     rm -rf node_modules/@playwright node_modules/playwright 2>/dev/null || true
+      #     mkdir -p node_modules/@playwright
+      #     # Create symlink pointing to global @playwright/test
+      #     ln -sfn /opt/homebrew/lib/node_modules/@playwright/test node_modules/@playwright/test
+      #     # Verify symlink
+      #     if [ -L "node_modules/@playwright/test" ]; then
+      #       echo "✓ Symlink created to global @playwright/test"
+      #       ls -la node_modules/@playwright/test
+      #     else
+      #       echo "✗ Failed to create symlink"
+      #       exit 1
+      #     fi
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
