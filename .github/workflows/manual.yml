@@ -52,24 +52,3 @@ jobs:
         with:
           name: junit-results-manual
           path: reports/junit/results.xml
-          
-      # - name: Upload html report to guthub page
-      #   if: always()
-      #   uses: actions/upload-pages-artifact@v3
-      #   with:
-      #     path: reports/playwright-report
-          
-      - name: Add report to summary
-        if: always()
-        run: |
-          RUN_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          cat >> $GITHUB_STEP_SUMMARY << EOF
-          # 📊 Playwright Test Report
-          
-          ## View Report
-          - **Artifact**: [playwright-report-manual.zip](${RUN_URL})
-          - Download the artifact and extract to view the HTML report
-          
-          ## Test Results
-          Check the artifacts section above to download the full HTML report.
-          EOF
