@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('homepage has title and get started link', async ({ page }) => {
+test('test1', async ({ page }) => {
   await page.goto('/');
 
   await expect(page).toHaveTitle(/Playwright/);
@@ -11,7 +11,7 @@ test('homepage has title and get started link', async ({ page }) => {
   await expect(page).toHaveURL(/.*docs\/intro/);
 });
 
-test('homepage has title and get started link', async ({ page }) => {
+test('test2', async ({ page }) => {
   await page.goto('/');
 
   await expect(page).toHaveTitle(/Playwright/);

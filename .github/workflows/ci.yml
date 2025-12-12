@@ -1,4 +1,4 @@
-name: Playwright CI
+name: On Merge to Main Branch
 
 on:
   push:
