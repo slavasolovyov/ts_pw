@@ -19,10 +19,13 @@ jobs:
     defaults:
       run:
         shell: bash
-    env:
-      PATH: /usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:${{ env.PATH }}
-      SHELL: /bin/bash
     steps:
+      - name: Setup environment
+        run: |
+          echo "PATH=/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH" >> $GITHUB_ENV
+          echo "SHELL=/bin/bash" >> $GITHUB_ENV
+        shell: bash
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -43,28 +46,21 @@ jobs:
 
       - name: Install project dependencies
         run: |
-          export PATH="/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
-          export SHELL="/bin/bash"
           which sh
           npm install --ignore-scripts
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
-          PATH: /usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:${{ env.PATH }}
-          SHELL: /bin/bash
 
       - name: Verify Playwright installation
         run: |
           echo "Playwright version: $(playwright --version || echo 'Not found')"
           echo "Global Playwright path: $(which playwright || echo 'Not in PATH')"
           echo "Node modules Playwright: $(npm list @playwright/test 2>/dev/null | head -1 || echo 'Not in project')"
-        env:
-          PATH: /usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:${{ env.PATH }}
 
       - name: Run Playwright tests
         run: playwright test
         env:
           CI: true
-          PATH: /usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:${{ env.PATH }}
 
       - name: Upload HTML report
         if: always()
