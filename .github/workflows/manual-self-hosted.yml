@@ -44,6 +44,13 @@ jobs:
 
       - name: Upload HTML report
         if: always()
+        run: |
+          REPORT_PATH="${{ github.workspace }}/reports/playwright-report/index.html"
+          echo "::notice::HTML Report: ${REPORT_PATH}"
+        continue-on-error: true
+
+      - name: Upload HTML report artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report-manual
