@@ -48,18 +48,32 @@ jobs:
       - name: Install project dependencies (excluding Playwright)
         run: |
           which sh
-          # Install only non-Playwright dependencies
-          npm install --ignore-scripts @types/node ts-node typescript
-          # Install reporter globally if not already installed, or locally
-          npm install --ignore-scripts @estruyf/github-actions-reporter || echo "Reporter install failed, using global if available"
+          # Remove any existing Playwright installations
+          rm -rf node_modules/@playwright node_modules/playwright node_modules/@playwright/test 2>/dev/null || true
+          # Install dependencies - this will install @playwright/test from package.json
+          npm install --ignore-scripts || true
+          # Remove local Playwright and create symlink to global version
+          rm -rf node_modules/@playwright node_modules/playwright 2>/dev/null || true
+          mkdir -p node_modules/@playwright
+          # Create symlink pointing to global @playwright/test
+          ln -sfn /opt/homebrew/lib/node_modules/@playwright/test node_modules/@playwright/test
+          # Verify symlink
+          if [ -L "node_modules/@playwright/test" ]; then
+            echo "✓ Symlink created to global @playwright/test"
+            ls -la node_modules/@playwright/test
+          else
+            echo "✗ Failed to create symlink"
+            exit 1
+          fi
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
 
-      - name: Verify global Playwright installation
+      - name: Verify Playwright installation
         run: |
           echo "Global Playwright version: $(playwright --version || echo 'Not found')"
           echo "Global Playwright path: $(which playwright || echo 'Not in PATH')"
           echo "Global @playwright/test: $(npm list -g @playwright/test 2>/dev/null | head -1 || echo 'Not installed globally')"
+          echo "Local @playwright/test: $(ls -la node_modules/@playwright/test 2>/dev/null | head -1 || echo 'Not found locally')"
           echo "NODE_PATH: ${NODE_PATH:-not set}"
 
       - name: Run Playwright tests using global installation
