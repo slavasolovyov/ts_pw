@@ -19,17 +19,21 @@ jobs:
     defaults:
       run:
         shell: bash
+    env:
+      PATH: /usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:${{ env.PATH }}
+      SHELL: /bin/bash
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup environment
+      - name: Verify environment
         run: |
-          echo "PATH=$PATH:/usr/bin:/bin:/opt/homebrew/bin" >> $GITHUB_ENV
-          echo "SHELL=/bin/bash" >> $GITHUB_ENV
-          which sh
-          which node
-          which npm
+          echo "PATH: $PATH"
+          which sh || echo "sh not found"
+          which bash || echo "bash not found"
+          which node || echo "node not found"
+          which npm || echo "npm not found"
+          ls -la /bin/sh || echo "/bin/sh not found"
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -38,21 +42,29 @@ jobs:
           cache: npm
 
       - name: Install project dependencies
-        run: npm ci --ignore-scripts
+        run: |
+          export PATH="/usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:$PATH"
+          export SHELL="/bin/bash"
+          which sh
+          npm install --ignore-scripts
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: 1
+          PATH: /usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:${{ env.PATH }}
+          SHELL: /bin/bash
 
       - name: Verify Playwright installation
         run: |
-          echo "Playwright version: $(npx playwright --version || echo 'Not found')"
+          echo "Playwright version: $(playwright --version || echo 'Not found')"
           echo "Global Playwright path: $(which playwright || echo 'Not in PATH')"
           echo "Node modules Playwright: $(npm list @playwright/test 2>/dev/null | head -1 || echo 'Not in project')"
+        env:
+          PATH: /usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:${{ env.PATH }}
 
       - name: Run Playwright tests
         run: playwright test
-
         env:
           CI: true
+          PATH: /usr/local/bin:/usr/bin:/bin:/opt/homebrew/bin:/usr/local/sbin:/usr/sbin:/sbin:${{ env.PATH }}
 
       - name: Upload HTML report
         if: always()
