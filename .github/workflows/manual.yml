@@ -53,6 +53,6 @@ jobs:
           path: reports/junit/results.xml
       - name: Upload html report to guthub page
         if: always()
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
           path: reports/playwright-report
