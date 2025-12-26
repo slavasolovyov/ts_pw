@@ -3,6 +3,9 @@ name: Manual
 on:
   workflow_dispatch
 
+permissions:
+  contents: write
+
 jobs:
   test:
     timeout-minutes: 60
@@ -22,10 +25,17 @@ jobs:
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
-        path: reports/playwright-report/index.html
-        retention-days: 5
+        path: reports/playwright-report
+        retention-days: 1
+        
+  publish-report: 
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - name: Upload artifacts
+      uses: actions/download-artifact@v7.0.0
     - name: Pubslish report to Pages
       uses: peaceiris/actions-gh-pages@v4
       with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: reports/playwright-report/index.html
+          publish_dir: reports/playwright-report
