@@ -32,10 +32,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     steps:
-    - name: Upload artifacts
+    - name: Downlaod artifacts
       uses: actions/download-artifact@v7.0.0
     - name: Pubslish report to Pages
-      uses: peaceiris/actions-gh-pages@v4
+      uses: actions/upload-pages-artifact@v4.0.0
       with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: reports/playwright-report
+          path: reports/playwright-report
