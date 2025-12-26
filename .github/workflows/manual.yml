@@ -36,8 +36,6 @@ jobs:
       uses: actions/download-artifact@v7.0.0
     - name: Pubslish report to Pages
       uses: actions/upload-pages-artifact@v4.0.0
-      with:
-          path: reports/playwright-report
     - name: Deploy page
       id: deployment
       uses: actions/deploy-pages@v4.0.5
