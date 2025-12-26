@@ -1,42 +1,57 @@
 name: Manual
 
 on:
-  workflow_dispatch
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v5
-    - uses: actions/setup-node@v5
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm install
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: _site
-        path: reports/playwright-report
-        retention-days: 1
-        
-  publish-report: 
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      - name: Upload Playwright report artifact
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 1
+
+  publish-report:
     runs-on: ubuntu-latest
     needs: test
+
     steps:
-    - name: Downlaod artifacts
-      uses: actions/download-artifact@v7.0.0
-    - name: Pubslish report to Pages
-      uses: actions/upload-pages-artifact@v4.0.0
-    - name: Deploy page
-      id: deployment
-      uses: actions/deploy-pages@v4.0.5
-     
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: playwright-report
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: playwright-report
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
